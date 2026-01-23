@@ -37,8 +37,8 @@ SYMPTOMS_REFERENCE <- tibble::tribble(
 
 # Simulation constants
 N_PATIENTS <- 50
-N_AMBULANCES <- 5
-AMBULANCE_TRIP_TIME <- 30 # minutes for a round trip
+N_AMBULANCES <- 10
+AMBULANCE_TRIP_TIME <- 15 # minutes for a round trip
 TRIAGE_LEVELS <- c("Red", "Yellow", "Green") # Highest to lowest priority
 
 # --- 3. Patient Generation Function ---
@@ -200,6 +200,7 @@ server <- function(input, output, session) {
       # 2. Classify each patient based on their symptoms and the student's triage map
       patients_classified <- patients |>
         tidyr::unnest(symptoms) |>
+        rename(symptom = symptoms) |> # Explicitly rename for consistency with joins
         left_join(student_triage_map, by = "symptom") |>
         group_by(patient_id) |>
         # A patient's color is the most severe color of all their symptoms
@@ -298,6 +299,7 @@ server <- function(input, output, session) {
     # browser()
     deadly_symptoms_data <- simulation_results() |>
       tidyr::unnest(symptoms) |>
+      rename(symptom = symptoms) |> # Explicitly rename for consistency with grouping
       group_by(symptom) |>
       summarise(
         pct_lifeflight = mean(result == "Life-Flight"),
