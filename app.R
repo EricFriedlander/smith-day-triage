@@ -101,6 +101,7 @@ generate_patients <- function(n_patients, symptoms_ref) {
 
 # --- 4. UI Definition ---
 ui <- page_navbar(
+  id = "main_nav",
   title = "Mass Casualty Triage Simulator",
   theme = bs_theme(version = 5, bootswatch = "cyborg"),
 
@@ -178,10 +179,24 @@ server <- function(input, output, session) {
     )
   })
 
-  # This eventReactive block runs the entire simulation when the button is clicked.
-  simulation_results <- eventReactive(input$run_simulation, {
-    # Show a notification that the simulation is running
-    showNotification("Running simulation...", type = "message", duration = 2)
+  # A reactive value to hold the results of the simulation.
+  # We use a reactiveVal here so we can trigger the calculation inside an
+  # observeEvent and store the result, which will then be used by the output
+  # renderers. This will now store a list with the data and the plots.
+  simulation_results <- reactiveVal(NULL)
+
+  # This observer block runs the entire simulation when the button is clicked.
+  observeEvent(input$run_simulation, {
+    # Show a modal dialog to let the user know work is happening.
+    showModal(modalDialog(
+      title = "Processing...",
+      div(
+        icon("ambulance", class = "fa-spin"), # Spinning ambulance icon
+        " Running simulation and generating after action report. Please wait."
+      ),
+      footer = NULL,
+      easyClose = FALSE
+    ))
 
     # Capture student's triage decisions into a tidy tibble
     student_triage_map <- tibble(
@@ -191,91 +206,100 @@ server <- function(input, output, session) {
 
     n_sims <- as.integer(input$n_simulations)
     sim_seed <- req(input$seed)
-    # browser()
+    
     # Use map_dfr to run the simulation N times and stack the results.
-    # We use `i - 1` in the seed so the N=1 run (i=1) uses the raw seed,
-    # making it identical to the first run of an N=100 simulation.
     results <- purrr::map_dfr(1:n_sims, ~ {
-      # Set the seed for reproducibility. It increments with each run in a batch.
       set.seed(sim_seed + .x - 1)
-
-      # 1. Generate a new set of 50 patients
       patients <- generate_patients(N_PATIENTS, SYMPTOMS_REFERENCE)
-
-      # 2. Classify each patient based on their symptoms and the student's triage map
       patients_classified <- patients |>
         tidyr::unnest(symptoms) |>
-        rename(symptom = symptoms) |> # Explicitly rename for consistency with joins
+        rename(symptom = symptoms) |>
         left_join(student_triage_map, by = "symptom") |>
         group_by(patient_id) |>
-        # A patient's color is the most severe color of all their symptoms
         summarise(
           patient_color = factor(assigned_color, levels = TRIAGE_LEVELS, ordered = TRUE) |> min(),
           max_wait_time = first(max_wait_time),
           symptoms = list(symptom)
         )
-
-      # 3. Simulate the ambulance queue with a Poisson process for new arrivals
       ambulance_q <- patients_classified |>
-        # Arrange patients by triage priority: Red > Yellow > Green
         arrange(patient_color)
-
-      # --- Discrete-Event Simulation for Ambulance Dispatch ---
-
-      # Generate arrival times for new ambulances based on a Poisson process.
-      # The time between arrivals is exponentially distributed. We generate plenty.
       inter_arrival_times <- rexp(N_PATIENTS * 2, rate = AMBULANCE_ARRIVAL_RATE)
       new_ambulance_arrival_times <- cumsum(inter_arrival_times)
-
-      # Create a single vector of availability times for ALL ambulances.
-      # It contains the initial N ambulances (all free at time 0) and all the
-      # new ambulances, whose initial availability is their arrival time.
-      ambulance_availability <- c(
-        rep(0, N_AMBULANCES),
-        new_ambulance_arrival_times
-      )
-
-      # This vector will store the calculated wait time for each patient.
+      ambulance_availability <- c(rep(0, N_AMBULANCES), new_ambulance_arrival_times)
       time_waited_vec <- numeric(N_PATIENTS)
-
-      # Loop through each patient in the priority queue to assign them an ambulance.
       for (i in 1:nrow(ambulance_q)) {
-        # A patient is assigned to whichever ambulance in the entire fleet is free next.
-        # This is the core of the discrete-event simulation.
         next_free_time <- min(ambulance_availability)
-        
-        # The patient's wait time is the time that the next ambulance becomes available.
         time_waited_vec[i] <- next_free_time
-        
-        # Find which ambulance in the vector corresponds to that free time.
         ambulance_idx <- which.min(ambulance_availability)
-        
-        # That ambulance is now assigned to the patient. Its next availability time
-        # is updated to be after it completes the round trip.
         ambulance_availability[ambulance_idx] <- next_free_time + AMBULANCE_TRIP_TIME
       }
-
-      # Add the calculated wait times to the patient queue tibble.
       ambulance_q$time_waited <- time_waited_vec
-
-      # 4. Determine the outcome for each patient
-      final_outcomes <- ambulance_q |>
+      ambulance_q |>
         mutate(
           result = if_else(time_waited > max_wait_time, "Life-Flight", "Standard"),
           simulation_run = .x
         ) |>
-        # Reorder columns for clarity
         select(
           simulation_run, patient_id, patient_color, time_waited,
           max_wait_time, result, symptoms
         )
-
-      final_outcomes
     })
+    
+    # --- NOW, PRE-RENDER ALL PLOTS ---
 
-    # Hide the notification
-    removeNotification(id = shiny::getDefaultReactiveDomain()$.shinydashboard_notification_id)
-    return(results)
+    # Plot 1: Deadly Symptoms
+    deadly_symptoms_data <- results |>
+      tidyr::unnest(symptoms) |>
+      rename(symptom = symptoms) |>
+      group_by(symptom) |>
+      summarise(pct_lifeflight = mean(result == "Life-Flight"), .groups = "drop")
+    
+    deadly_symptoms_plot <- ggplot(deadly_symptoms_data, aes(x = pct_lifeflight, y = fct_reorder(symptom, pct_lifeflight))) +
+      geom_col(fill = "#e84351") +
+      scale_x_continuous(labels = scales::percent) +
+      labs(x = "Percent of Patients Requiring Life-Flight", y = "Symptom") +
+      theme_minimal(base_size = 14)
+
+    # Plot 2: Wait Time vs. Reality
+    wait_time_plot_data <- results |>
+      mutate(patient_color = factor(patient_color, levels = TRIAGE_LEVELS))
+      
+    wait_time_plot <- ggplot(wait_time_plot_data, aes(x = patient_color, y = max_wait_time, fill = patient_color)) +
+      geom_boxplot() +
+      scale_fill_manual(values = c("Red" = "#e84351", "Yellow" = "#f39c12", "Green" = "#00bc8c")) +
+      labs(x = "Assigned Patient Triage Color", y = "Time Until Life-Flight Required (minutes)") +
+      theme_minimal(base_size = 14) +
+      theme(legend.position = "none")
+
+    # Plot 3: Histogram (only for N > 1)
+    lifeflight_histogram_plot <- NULL
+    if (n_sims > 1) {
+      lifeflights_per_run <- results |>
+        group_by(simulation_run) |>
+        summarise(n_flights = sum(result == "Life-Flight"), .groups = "drop")
+      
+      lifeflight_histogram_plot <- ggplot(lifeflights_per_run, aes(x = n_flights)) +
+        geom_histogram(binwidth = 1, fill = "#00bc8c", color = "black") +
+        labs(
+          x = "Number of Life-Flights in a Single Simulation",
+          y = "Frequency (Number of Simulations)",
+          title = "Histogram of Life-Flight Outcomes"
+        ) +
+        theme_minimal(base_size = 14) +
+        theme(plot.title = element_text(hjust = 0.5))
+    }
+
+    # Store all results and plots in our reactiveVal
+    simulation_results(list(
+      data = results,
+      deadly_symptoms_plot = deadly_symptoms_plot,
+      wait_time_plot = wait_time_plot,
+      lifeflight_histogram = lifeflight_histogram_plot
+    ))
+    
+    # Remove the modal and switch tabs
+    removeModal()
+    updateNavbarPage(session, "main_nav", selected = "After Action Report")
   })
 
 
@@ -283,7 +307,9 @@ server <- function(input, output, session) {
 
   # Render the summary metrics (Total Life-Flights or Average)
   output$results_summary_ui <- renderUI({
-    results <- simulation_results()
+    req(simulation_results())
+    
+    results <- simulation_results()$data
     n_sims <- as.integer(input$n_simulations)
 
     if (n_sims == 1) {
@@ -315,65 +341,27 @@ server <- function(input, output, session) {
 
   # Render the histogram of life-flights for N=100 runs
   output$lifeflight_histogram <- renderPlot({
-    req(as.integer(input$n_simulations) == 100)
-
-    lifeflights_per_run <- simulation_results() |>
-      group_by(simulation_run) |>
-      summarise(n_flights = sum(result == "Life-Flight"), .groups = "drop")
-
-    ggplot(lifeflights_per_run, aes(x = n_flights)) +
-      geom_histogram(binwidth = 1, fill = "#00bc8c", color = "black") +
-      labs(
-        x = "Number of Life-Flights in a Single Simulation",
-        y = "Frequency (Number of Simulations)",
-        title = "Histogram of Life-Flight Outcomes"
-      ) +
-      theme_minimal(base_size = 14) +
-      theme(plot.title = element_text(hjust = 0.5))
+    req(simulation_results()$lifeflight_histogram)
+    simulation_results()$lifeflight_histogram
   })
 
   # Render the "Deadly Symptoms" bar chart
   output$deadly_symptoms_plot <- renderPlot({
-    # browser()
-    deadly_symptoms_data <- simulation_results() |>
-      tidyr::unnest(symptoms) |>
-      rename(symptom = symptoms) |> # Explicitly rename for consistency with grouping
-      group_by(symptom) |>
-      summarise(
-        pct_lifeflight = mean(result == "Life-Flight"),
-        .groups = "drop"
-      )
-
-    ggplot(deadly_symptoms_data, aes(x = pct_lifeflight, y = fct_reorder(symptom, pct_lifeflight))) +
-      geom_col(fill = "#e84351") +
-      scale_x_continuous(labels = scales::percent) +
-      labs(
-        x = "Percent of Patients Requiring Life-Flight",
-        y = "Symptom"
-      ) +
-      theme_minimal(base_size = 14)
+    req(simulation_results()$deadly_symptoms_plot)
+    simulation_results()$deadly_symptoms_plot
   })
 
   # Render the "Wait Time vs. Reality" boxplot
   output$wait_time_plot <- renderPlot({
-    results <- simulation_results() |>
-      mutate(patient_color = factor(patient_color, levels = TRIAGE_LEVELS))
-
-    ggplot(results, aes(x = patient_color, y = max_wait_time, fill = patient_color)) +
-      geom_boxplot() +
-      scale_fill_manual(values = c("Red" = "#e84351", "Yellow" = "#f39c12", "Green" = "#00bc8c")) +
-      labs(
-        x = "Assigned Patient Triage Color",
-        y = "Time Until Life-Flight Required (minutes)"
-      ) +
-      theme_minimal(base_size = 14) +
-      theme(legend.position = "none")
+    req(simulation_results()$wait_time_plot)
+    simulation_results()$wait_time_plot
   })
 
   # Render the detailed patient data table
   output$patient_table <- DT::renderDataTable({
+    req(simulation_results()$data)
     # Pre-process the symptoms list-column to be a comma-separated string for display
-    display_data <- simulation_results() |>
+    display_data <- simulation_results()$data |>
       mutate(symptoms = purrr::map_chr(symptoms, ~ paste(.x, collapse = ", ")))
 
     DT::datatable(
@@ -383,6 +371,7 @@ server <- function(input, output, session) {
       filter = "top"
     )
   })
+
 
 }
 
