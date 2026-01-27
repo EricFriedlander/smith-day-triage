@@ -104,6 +104,25 @@ ui <- page_navbar(
   id = "main_nav",
   title = "Mass Casualty Triage Simulator",
   theme = bs_theme(version = 5, bootswatch = "cyborg"),
+  header = tags$head(
+    tags$style(HTML("
+      @keyframes slide {
+        0% { transform: translateX(-100px); }
+        100% { transform: translateX(500px); }
+      }
+      .ambulance-parade {
+        height: 50px;
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+      }
+      .ambulance-icon {
+        font-size: 40px;
+        position: absolute;
+        animation: slide 3s linear infinite;
+      }
+    "))
+  ),
 
   # ## TAB 1: TRIAGE STATION (SETUP) ##
   nav_panel(
@@ -191,9 +210,12 @@ server <- function(input, output, session) {
     showModal(modalDialog(
       title = "Processing...",
       div(
-        icon("ambulance", class = "fa-spin"), # Spinning ambulance icon
-        " Running simulation and generating after action report. Please wait."
+        class = "ambulance-parade",
+        icon("ambulance", class = "ambulance-icon", style = "animation-delay: 0s;"),
+        icon("ambulance", class = "ambulance-icon", style = "animation-delay: 0.5s;"),
+        icon("ambulance", class = "ambulance-icon", style = "animation-delay: 1s;")
       ),
+      "Running simulation and generating after action report. Please wait.",
       footer = NULL,
       easyClose = FALSE
     ))

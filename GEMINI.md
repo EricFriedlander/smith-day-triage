@@ -9,7 +9,7 @@ The core of the project is a single-file Shiny app (`app.R`) that allows student
 2.  **Run Simulations:** Execute a simulation with a set of patients, each having random symptoms. The simulation can be a single run or a statistical run of 100 simulations.
 3.  **Analyze Results:** View an "After Action Report" that includes key metrics (like the number of "Life-Flights"), visualizations to identify critical symptoms, and a detailed log of all simulated patients.
 
-When the user clicks the "Run Simulation" button, the application displays a loading animation while it runs the simulation and pre-generates all plots for the report. Once the processing is complete, the user is automatically taken to the "After Action Report" tab to view the results. This ensures a smooth and responsive user experience.
+When the user clicks the "Run Simulation" button, the application displays a loading animation of moving ambulances while it runs the simulation and pre-generates all plots for the report. Once the processing is complete, the user is automatically taken to the "After Action Report" tab to view the results. This ensures a smooth and responsive user experience.
 
 The primary technologies used are:
 *   **R:** The programming language.
