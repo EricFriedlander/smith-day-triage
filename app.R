@@ -19,7 +19,7 @@ library(DT)
 # mean_wait: Average time (minutes) a patient can wait before needing critical care.
 # sd_wait: Standard deviation, representing variability.
 
-multiplier <- 3
+multiplier <- 1
 SYMPTOMS_REFERENCE <- tibble::tribble(
   ~symptom, ~mean_wait, ~sd_wait, ~default_color,
   # Critical Symptoms (low wait times)
@@ -43,6 +43,7 @@ SYMPTOMS_REFERENCE <- tibble::tribble(
 N_PATIENTS <- 50
 N_AMBULANCES <- 10
 AMBULANCE_TRIP_TIME <- 15 # minutes for a round trip
+AMBULANCE_ARRIVAL_RATE <- 0.1 # Average number of new ambulances arriving per minute
 TRIAGE_LEVELS <- c("Red", "Yellow", "Green") # Highest to lowest priority
 
 # --- 3. Patient Generation Function ---
@@ -214,15 +215,48 @@ server <- function(input, output, session) {
           symptoms = list(symptom)
         )
 
-      # 3. Simulate the ambulance queue
+      # 3. Simulate the ambulance queue with a Poisson process for new arrivals
       ambulance_q <- patients_classified |>
         # Arrange patients by triage priority: Red > Yellow > Green
-        arrange(patient_color) |>
-        mutate(
-          # Calculate wait time based on queue position and ambulance availability
-          queue_position = row_number(),
-          time_waited = floor((queue_position - 1) / N_AMBULANCES) * AMBULANCE_TRIP_TIME
-        )
+        arrange(patient_color)
+
+      # --- Discrete-Event Simulation for Ambulance Dispatch ---
+
+      # Generate arrival times for new ambulances based on a Poisson process.
+      # The time between arrivals is exponentially distributed. We generate plenty.
+      inter_arrival_times <- rexp(N_PATIENTS * 2, rate = AMBULANCE_ARRIVAL_RATE)
+      new_ambulance_arrival_times <- cumsum(inter_arrival_times)
+
+      # Create a single vector of availability times for ALL ambulances.
+      # It contains the initial N ambulances (all free at time 0) and all the
+      # new ambulances, whose initial availability is their arrival time.
+      ambulance_availability <- c(
+        rep(0, N_AMBULANCES),
+        new_ambulance_arrival_times
+      )
+
+      # This vector will store the calculated wait time for each patient.
+      time_waited_vec <- numeric(N_PATIENTS)
+
+      # Loop through each patient in the priority queue to assign them an ambulance.
+      for (i in 1:nrow(ambulance_q)) {
+        # A patient is assigned to whichever ambulance in the entire fleet is free next.
+        # This is the core of the discrete-event simulation.
+        next_free_time <- min(ambulance_availability)
+        
+        # The patient's wait time is the time that the next ambulance becomes available.
+        time_waited_vec[i] <- next_free_time
+        
+        # Find which ambulance in the vector corresponds to that free time.
+        ambulance_idx <- which.min(ambulance_availability)
+        
+        # That ambulance is now assigned to the patient. Its next availability time
+        # is updated to be after it completes the round trip.
+        ambulance_availability[ambulance_idx] <- next_free_time + AMBULANCE_TRIP_TIME
+      }
+
+      # Add the calculated wait times to the patient queue tibble.
+      ambulance_q$time_waited <- time_waited_vec
 
       # 4. Determine the outcome for each patient
       final_outcomes <- ambulance_q |>
@@ -330,7 +364,7 @@ server <- function(input, output, session) {
       scale_fill_manual(values = c("Red" = "#e84351", "Yellow" = "#f39c12", "Green" = "#00bc8c")) +
       labs(
         x = "Assigned Patient Triage Color",
-        y = "Actual Max Tolerable Wait Time (minutes)"
+        y = "Time Until Life-Flight Required (minutes)"
       ) +
       theme_minimal(base_size = 14) +
       theme(legend.position = "none")
