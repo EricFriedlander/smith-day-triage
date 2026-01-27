@@ -18,6 +18,8 @@ library(DT)
 # A master tibble of all possible symptoms.
 # mean_wait: Average time (minutes) a patient can wait before needing critical care.
 # sd_wait: Standard deviation, representing variability.
+
+multiplier <- 3
 SYMPTOMS_REFERENCE <- tibble::tribble(
   ~symptom, ~mean_wait, ~sd_wait, ~default_color,
   # Critical Symptoms (low wait times)
@@ -33,7 +35,9 @@ SYMPTOMS_REFERENCE <- tibble::tribble(
   "Simple Fracture", 240, 60, "Green",
   "Sprain", 300, 60, "Green",
   "Minor Abrasions", 360, 60, "Green"
-)
+) |> 
+  mutate(mean_wait = mean_wait * multiplier,
+        sd_wait = sd_wait * multiplier)
 
 # Simulation constants
 N_PATIENTS <- 50
