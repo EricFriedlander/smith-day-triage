@@ -1,0 +1,17 @@
+Title: Triage Activity
+Type: Shiny
+Package: triage
+Version: 0.1.0
+Imports:
+    shiny,
+    bslib,
+    glue,
+    DT,
+    dplyr,
+    ggplot2,
+    purrr,
+    stringr,
+    tidyr,
+    tibble,
+    forcats,
+    readr
