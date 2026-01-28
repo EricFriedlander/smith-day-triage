@@ -1,0 +1,4 @@
+- Update the GEMINI.md to reflect the current state of the project.
+- Add all changes you've made in this chat. 
+- Commit those changes to the working branch using a descriptive but concise commit message. 
+- Push those changes to the remote repository.
