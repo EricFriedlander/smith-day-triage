@@ -1,4 +1,3 @@
-
 #
 # Mass Casualty Triage Simulation - R Shiny App
 # For High School Data Science Education
@@ -35,9 +34,11 @@ SYMPTOMS_REFERENCE <- tibble::tribble(
   "Simple Fracture", 240, 60, "Green",
   "Sprain", 300, 60, "Green",
   "Minor Abrasions", 360, 60, "Green"
-) |> 
-  mutate(mean_wait = mean_wait * multiplier,
-        sd_wait = sd_wait * multiplier)
+) |>
+  mutate(
+    mean_wait = mean_wait * multiplier,
+    sd_wait = sd_wait * multiplier
+  )
 
 # Simulation constants
 N_PATIENTS <- 50
@@ -120,6 +121,7 @@ ui <- page_navbar(
         font-size: 40px;
         position: absolute;
         animation: slide 3s linear infinite;
+        animation-fill-mode: both;
       }
     "))
   ),
@@ -189,7 +191,6 @@ ui <- page_navbar(
 
 # --- 5. Server Logic ---
 server <- function(input, output, session) {
-
   # Create a reactive list of symptom IDs for easier gathering of inputs
   symptom_input_ids <- reactive({
     setNames(
@@ -228,7 +229,7 @@ server <- function(input, output, session) {
 
     n_sims <- as.integer(input$n_simulations)
     sim_seed <- req(input$seed)
-    
+
     # Use map_dfr to run the simulation N times and stack the results.
     results <- purrr::map_dfr(1:n_sims, ~ {
       set.seed(sim_seed + .x - 1)
@@ -266,7 +267,7 @@ server <- function(input, output, session) {
           max_wait_time, result, symptoms
         )
     })
-    
+
     # --- NOW, PRE-RENDER ALL PLOTS ---
 
     # Plot 1: Deadly Symptoms
@@ -275,7 +276,7 @@ server <- function(input, output, session) {
       rename(symptom = symptoms) |>
       group_by(symptom) |>
       summarise(pct_lifeflight = mean(result == "Life-Flight"), .groups = "drop")
-    
+
     deadly_symptoms_plot <- ggplot(deadly_symptoms_data, aes(x = pct_lifeflight, y = fct_reorder(symptom, pct_lifeflight))) +
       geom_col(fill = "#e84351") +
       scale_x_continuous(labels = scales::percent) +
@@ -285,7 +286,7 @@ server <- function(input, output, session) {
     # Plot 2: Wait Time vs. Reality
     wait_time_plot_data <- results |>
       mutate(patient_color = factor(patient_color, levels = TRIAGE_LEVELS))
-      
+
     wait_time_plot <- ggplot(wait_time_plot_data, aes(x = patient_color, y = max_wait_time, fill = patient_color)) +
       geom_boxplot() +
       scale_fill_manual(values = c("Red" = "#e84351", "Yellow" = "#f39c12", "Green" = "#00bc8c")) +
@@ -299,7 +300,7 @@ server <- function(input, output, session) {
       lifeflights_per_run <- results |>
         group_by(simulation_run) |>
         summarise(n_flights = sum(result == "Life-Flight"), .groups = "drop")
-      
+
       lifeflight_histogram_plot <- ggplot(lifeflights_per_run, aes(x = n_flights)) +
         geom_histogram(binwidth = 1, fill = "#00bc8c", color = "black") +
         labs(
@@ -318,7 +319,7 @@ server <- function(input, output, session) {
       wait_time_plot = wait_time_plot,
       lifeflight_histogram = lifeflight_histogram_plot
     ))
-    
+
     # Remove the modal and switch tabs
     removeModal()
     updateNavbarPage(session, "main_nav", selected = "After Action Report")
@@ -330,7 +331,7 @@ server <- function(input, output, session) {
   # Render the summary metrics (Total Life-Flights or Average)
   output$results_summary_ui <- renderUI({
     req(simulation_results())
-    
+
     results <- simulation_results()$data
     n_sims <- as.integer(input$n_simulations)
 
@@ -393,8 +394,6 @@ server <- function(input, output, session) {
       filter = "top"
     )
   })
-
-
 }
 
 # --- 6. Run the Application ---
