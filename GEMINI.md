@@ -51,3 +51,29 @@ The `app.R` code follows modern R and `tidyverse` style conventions.
 *   **Tidyverse Syntax:** The code makes extensive use of `tidyverse` packages and syntax, including the native R pipe (`|>`).
 *   **Variable Naming:** Variables and functions are named using `snake_case` (e.g., `run_simulation`, `patient_id`).
 *   **File Structure:** The application is self-contained within the `app.R` file, which includes the UI, server logic, and simulation functions.
+
+## Shinylive Deployment
+
+The app can be deployed as a static website using [Shinylive](https://posit-dev.github.io/r-shinylive/). A GitHub Actions workflow (`.github/workflows/deploy-app.yaml`) handles automated deployment to GitHub Pages.
+
+### Known Issues & Workarounds
+
+Due to version mismatches between the project's `renv.lock` and the Shinylive WASM repository, a patching script (`scripts/patch_shinylive.R`) is used to:
+
+1. Download compatible versions of `shiny`, `bslib`, `munsell`, and `colorspace`.
+2. Update the package metadata to register these packages.
+
+**Important:** Do NOT add `glue` to the patch script - it conflicts with the base Shinylive distribution.
+
+### Manual Deployment
+
+```bash
+# Export the app
+Rscript -e 'shinylive::export("myapp", "site")'
+
+# Patch missing packages
+Rscript scripts/patch_shinylive.R
+
+# Serve locally
+Rscript -e 'httpuv::runStaticServer("site")'
+```

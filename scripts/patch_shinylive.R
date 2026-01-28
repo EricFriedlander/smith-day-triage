@@ -7,8 +7,7 @@ packages_to_fetch <- list(
        url = "http://repo.r-wasm.org/bin/emscripten/contrib/4.4/shiny_1.9.1.8002.tgz"),
   list(name = "bslib", version = "0.9.0",
        url = "http://repo.r-wasm.org/bin/emscripten/contrib/4.4/bslib_0.9.0.tgz"),
-  list(name = "glue", version = "1.8.0",
-       url = "http://repo.r-wasm.org/bin/emscripten/contrib/4.4/glue_1.8.0.tgz"),
+  # NOTE: Do NOT add glue - it conflicts with the base Shinylive distribution (1.7.0 vs 1.8.0)
   list(name = "munsell", version = "0.5.1",
        url = "http://repo.r-wasm.org/bin/emscripten/contrib/4.4/munsell_0.5.1.tgz"),
   list(name = "colorspace", version = "2.1-1",
