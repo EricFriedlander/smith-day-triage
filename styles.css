@@ -1,0 +1,103 @@
+/* College of Idaho Brand Styles */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Open+Sans:wght@400;600&display=swap');
+
+:root {
+  --coi-purple: #543A61;
+  --coi-gold: #FFCB70;
+  --coi-green: #414C00;
+  --coi-dark-purple: #412d5e;
+  --white: #ffffff;
+  --light-gray: #f8f9fa;
+  --text-color: #333333;
+}
+
+/* Base Theme Overrides */
+.reveal {
+  color: var(--text-color);
+  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 32px;
+}
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4,
+.reveal h5,
+.reveal h6 {
+  color: var(--coi-purple);
+  font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  /* Default theme often uppercases */
+}
+
+/* Title Slide Specifics */
+.reveal .title-slide h1 {
+  color: var(--coi-gold);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  font-size: 2.5em;
+}
+
+.reveal .title-slide h2 {
+  color: var(--white);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.reveal .title-slide p {
+  color: #dddddd;
+}
+
+/* Slide Backgrounds */
+.reveal .slide-background-content {
+  background-color: var(--white);
+  /* You could add a subtle footer image here if extracted */
+}
+
+/* Header/Footer Elements if needed */
+.reveal .slide-number {
+  color: var(--coi-purple);
+  background-color: transparent;
+  bottom: 20px;
+  right: 20px;
+}
+
+/* Links */
+.reveal a {
+  color: var(--coi-purple);
+  text-decoration: underline;
+}
+
+.reveal a:hover {
+  color: var(--coi-gold);
+}
+
+/* Progress Bar */
+.reveal .progress span {
+  background-color: var(--coi-gold);
+}
+
+/* Custom Classes */
+.text-purple {
+  color: var(--coi-purple) !important;
+}
+
+.text-gold {
+  color: var(--coi-gold) !important;
+}
+
+.bg-purple {
+  background-color: var(--coi-purple) !important;
+  color: white !important;
+}
+
+/* Panel Tabset Tweaks */
+.reveal .panel-tabset .tab-content {
+  border-top: 2px solid var(--coi-purple);
+}
+
+.reveal .panel-tabset .nav-tabs .nav-link.active {
+  background-color: var(--coi-purple);
+  color: var(--white);
+  border-color: var(--coi-purple);
+}

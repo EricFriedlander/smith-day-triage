@@ -1,0 +1,104 @@
+---
+title: "Mass Casualty Triage Simulation"
+subtitle: "High School Data Science Activity"
+author: "Eric Friedlander"
+format:
+  revealjs:
+    theme: default
+    logo: Howler-Logo-01.png 
+    css: styles.css
+    transition: fade
+    slide-number: true
+    center: true
+    title-slide-attributes:
+      data-background-image: "style/slide_images/image2.jpeg"
+      data-background-opacity: "0.4"
+      data-background-color: "#000000"
+---
+
+## The Scenario
+
+A major incident has occurred. 
+
+Dozens of patients are injured.
+
+Resources are limited.
+
+## Your Role
+
+You are the **Triage Officer**.
+
+- **Goal:** Save as many lives as possible.
+- **Challenge:** You have **50 patients** but only **10 ambulances**.
+- **Decision:** Who goes first? Who waits?
+
+---
+
+## The Mathematics of Survival
+
+This activity explores:
+
+1.  **Prioritization:** Making hard choices with limited info.
+2.  **Resource Allocation:** Managing a bottleneck (ambulances).
+3.  **Statistical Thinking:** Understanding variability and risk.
+
+## The Simulation App
+
+We will use a shiny application to run the simulation.
+
+::: {.panel-tabset}
+
+### Classify
+Assign a priority color to symptoms based on urgency.
+- <span style="color: #e84351; font-weight: bold;">Red:</span> Immediate
+- <span style="color: #f39c12; font-weight: bold;">Yellow:</span> Urgent
+- <span style="color: #00bc8c; font-weight: bold;">Green:</span> Delayed
+
+### Simulate
+Watch as patients are transported.
+- **Ambulance Round Trip:** 15 Minutes.
+- **Wait Time:** If a patient waits longer than their body can handle, they require a **Life-Flight** (Critical Failure).
+
+### Analyze
+View the "After Action Report".
+- Which symptoms caused the most Life-Flights?
+- Did your classification match reality?
+:::
+
+## Key Metrics
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+
+<div style="border: 2px solid #543A61; padding: 20px; border-radius: 10px;">
+<h3 style="color: #543A61;">Max Wait Time</h3>
+The simplified "time until death" or critical failure for a patient.
+</div>
+
+<div style="border: 2px solid #543A61; padding: 20px; border-radius: 10px;">
+<h3 style="color: #543A61;">Life-Flight</h3>
+The outcome when:
+<br>
+<em>Actual Wait Time > Max Wait Time</em>
+</div>
+
+</div>
+
+## Activity Steps
+
+1.  **Open the App**: Launch `app.R`.
+2.  **Triage Station**: Review the 10 symptoms (e.g., *Chest Pain*, *Sprain*, *Unconscious*).
+3.  **Assign Colors**: Decide who is Red, Yellow, or Green.
+4.  **Run Simulation**: Start with 1 run, then try 100.
+5.  **Iterate**: Use the **After Action Report** to refine your strategy. Can you save everyone?
+
+## Discussion Questions
+
+- Which symptoms were "deceptively" dangerous?
+- How did variability (randomness) affect your results?
+- Is it better to be safe (classify everyone as Red) or efficient?
+
+## Ready? {background-color="#543A61"}
+
+<div style="color: #FFCB70; font-size: 2em; font-weight: bold;">
+Let's Save Lives.
+</div>
