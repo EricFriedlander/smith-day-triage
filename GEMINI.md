@@ -5,9 +5,9 @@
 This project is an R Shiny application designed for a high school data science activity. The application simulates a mass casualty triage scenario, teaching students about prioritization, resource allocation, and statistical thinking.
 
 The core of the project is a single-file Shiny app (`app.R`) that allows students to:
-1.  **Classify Symptoms:** Assign triage levels (Red, Yellow, Green) to various medical symptoms.
+1.  **Classify Symptoms:** Assign triage levels (Red, Yellow, Green) to various medical symptoms. To increase the difficulty of the exercise, the symptom names have been made less obvious and are displayed in alphabetical order. All symptoms default to "Green".
 2.  **Run Simulations:** Execute a simulation with a set of patients, each having random symptoms. The simulation can be a single run or a statistical run of 100 simulations.
-3.  **Analyze Results:** View an "After Action Report" that includes key metrics (like the number of "Life-Flights"), visualizations to identify critical symptoms, and a detailed log of all simulated patients.
+3.  **Analyze Results:** View an "After Action Report" that includes key metrics (like the number of "Life-Flights"), visualizations to identify critical symptoms, and a detailed log of all simulated patients. A "Triage vs. Transport Time" plot allows students to analyze the time patients waited for transport based on their assigned triage color. This plot can be filtered by transport type (Life-Flight, Ambulance, or Both).
 
 When the user clicks the "Run Simulation" button, the application displays a loading animation of moving ambulances while it runs the simulation and pre-generates all plots for the report. Once the processing is complete, the user is automatically taken to the "After Action Report" tab to view the results. This ensures a smooth and responsive user experience.
 

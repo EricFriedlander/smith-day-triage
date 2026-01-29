@@ -184,8 +184,15 @@ ui <- page_navbar(
       ),
       # Plot 2: Did the triage color match the urgency?
       card(
-        card_header("Analysis: Wait Time vs. Reality"),
-        p("This chart compares the time a patient waited until they required a life-flight against the Triage Color you assigned."),
+        card_header("Analysis: Triage vs. Transport Time"),
+        p("This chart compares the time a patient waited for transport against the Triage Color you assigned. Use the filter to see how transport type affected wait times."),
+        radioButtons(
+          "transport_filter",
+          "Filter by Transport:",
+          choices = c("Both", "Life-Flight", "Standard"),
+          selected = "Both",
+          inline = TRUE
+        ),
         plotOutput("wait_time_plot", height = "500px")
       )
     ),
@@ -293,17 +300,6 @@ server <- function(input, output, session) {
       labs(x = "Percent of Patients Requiring Life-Flight", y = "Symptom") +
       theme_minimal(base_size = 14)
 
-    # Plot 2: Wait Time vs. Reality
-    wait_time_plot_data <- results |>
-      mutate(patient_color = factor(patient_color, levels = TRIAGE_LEVELS))
-
-    wait_time_plot <- ggplot(wait_time_plot_data, aes(x = patient_color, y = max_wait_time, fill = patient_color)) +
-      geom_boxplot() +
-      scale_fill_manual(values = c("Red" = "#e84351", "Yellow" = "#f39c12", "Green" = "#00bc8c")) +
-      labs(x = "Assigned Patient Triage Color", y = "Time Until Life-Flight Required (minutes)") +
-      theme_minimal(base_size = 14) +
-      theme(legend.position = "none")
-
     # Plot 3: Histogram (only for N > 1)
     lifeflight_histogram_plot <- NULL
     if (n_sims > 1) {
@@ -326,7 +322,6 @@ server <- function(input, output, session) {
     simulation_results(list(
       data = results,
       deadly_symptoms_plot = deadly_symptoms_plot,
-      wait_time_plot = wait_time_plot,
       lifeflight_histogram = lifeflight_histogram_plot
     ))
 
@@ -386,8 +381,33 @@ server <- function(input, output, session) {
 
   # Render the "Wait Time vs. Reality" boxplot
   output$wait_time_plot <- renderPlot({
-    req(simulation_results()$wait_time_plot)
-    simulation_results()$wait_time_plot
+    req(simulation_results()$data)
+
+    plot_data <- simulation_results()$data
+
+    # Filter data based on the transport filter input
+    if (input$transport_filter != "Both") {
+      plot_data <- plot_data |>
+        filter(result == input$transport_filter)
+    }
+
+    # Ensure there's data to plot after filtering
+    validate(
+      need(nrow(plot_data) > 0, "No data available for this filter selection.")
+    )
+    
+    plot_data <- plot_data |>
+      mutate(patient_color = factor(patient_color, levels = TRIAGE_LEVELS))
+
+    ggplot(plot_data, aes(x = patient_color, y = time_waited, fill = patient_color)) +
+      geom_boxplot() +
+      scale_fill_manual(values = c("Red" = "#e84351", "Yellow" = "#f39c12", "Green" = "#00bc8c")) +
+      labs(
+        x = "Assigned Patient Triage Color",
+        y = "Time Waited for Transport (minutes)"
+      ) +
+      theme_minimal(base_size = 14) +
+      theme(legend.position = "none")
   })
 
   # Render the detailed patient data table
