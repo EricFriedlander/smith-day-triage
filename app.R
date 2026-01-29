@@ -141,7 +141,7 @@ ui <- page_navbar(
     layout_sidebar(
       sidebar = sidebar(
         title = "Simulation Controls",
-        numericInput("seed", "Simulation Seed", value = 123, min = 1),
+        numericInput("seed", "Simulation Seed", value = sample(1:100000, 1), min = 1),
         radioButtons(
           "n_simulations",
           "Number of Simulations",
