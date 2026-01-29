@@ -5,6 +5,6 @@ account: efriedlander
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 16535208
-bundleId: 11511913
+bundleId: 11512244
 url: https://efriedlander.shinyapps.io/high-school-triage-activity/
 version: 1
