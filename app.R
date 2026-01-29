@@ -113,6 +113,7 @@ ui <- page_navbar(
   id = "main_nav",
   title = "Mass Casualty Triage Simulator",
   theme = bs_theme(version = 5, bootswatch = "cyborg"),
+  fillable = FALSE,
   header = tags$head(
     tags$style(HTML("
       @keyframes slide {
@@ -178,13 +179,13 @@ ui <- page_navbar(
       card(
         card_header("Analysis: The Deadly Symptoms"),
         p("This chart shows the percentage of patients with a given symptom who required a Life-Flight. High bars indicate symptoms you may have under-prioritized."),
-        plotOutput("deadly_symptoms_plot")
+        plotOutput("deadly_symptoms_plot", height = "500px")
       ),
       # Plot 2: Did the triage color match the urgency?
       card(
         card_header("Analysis: Wait Time vs. Reality"),
         p("This chart compares the patient's true urgency (Max Wait Time) against the Triage Color you assigned. Critical patients (low Max Wait Time) in the Green category are a major risk."),
-        plotOutput("wait_time_plot")
+        plotOutput("wait_time_plot", height = "500px")
       )
     ),
     # Data table of all patients
@@ -364,7 +365,7 @@ server <- function(input, output, session) {
         ),
         card(
           card_header("Distribution of Life-Flights"),
-          plotOutput("lifeflight_histogram")
+          plotOutput("lifeflight_histogram", height = "500px")
         )
       )
     }
