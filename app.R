@@ -19,6 +19,7 @@ library(forcats)
 library(readr)
 library(DT)
 library(glue)
+library(ggforce)
 
 # --- 2. Data and Constants ---
 
@@ -271,7 +272,7 @@ server <- function(input, output, session) {
         next_free_time <- min(ambulance_availability)
         time_waited_vec[i] <- next_free_time
         ambulance_idx <- which.min(ambulance_availability)
-        ambulance_availability[ambulance_idx] <- next_free_time + AMBULANCE_TRIP_TIME
+        ambulance_availability[ambulance_idx] <- next_free_time + rexp(1, rate = 1 / AMBULANCE_TRIP_TIME)
       }
       ambulance_q$time_waited <- time_waited_vec
       ambulance_q |>
@@ -399,9 +400,11 @@ server <- function(input, output, session) {
     plot_data <- plot_data |>
       mutate(patient_color = factor(patient_color, levels = TRIAGE_LEVELS))
 
-    ggplot(plot_data, aes(x = patient_color, y = time_waited, fill = patient_color)) +
-      geom_boxplot() +
-      scale_fill_manual(values = c("Red" = "#e84351", "Yellow" = "#f39c12", "Green" = "#00bc8c")) +
+    ggplot(plot_data, aes(x = patient_color, y = time_waited, color = patient_color)) +
+      # geom_boxplot(fill = "white") +
+      geom_sina(alpha = 0.25, jitter_y = FALSE, scale = "width") +
+      # scale_fill_manual(values = c("Red" = "#e84351", "Yellow" = "#f39c12", "Green" = "#00bc8c")) +
+      scale_color_manual(values = c("Red" = "#e84351", "Yellow" = "#f39c12", "Green" = "#00bc8c")) +
       labs(
         x = "Assigned Patient Triage Color",
         y = "Time Waited for Transport (minutes)"
