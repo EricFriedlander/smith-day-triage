@@ -402,7 +402,7 @@ server <- function(input, output, session) {
 
     ggplot(plot_data, aes(x = patient_color, y = time_waited, color = patient_color)) +
       # geom_boxplot(fill = "white") +
-      geom_sina(alpha = 0.25, jitter_y = FALSE, scale = "width") +
+      geom_sina(alpha = 0.5, jitter_y = FALSE, scale = "width") +
       # scale_fill_manual(values = c("Red" = "#e84351", "Yellow" = "#f39c12", "Green" = "#00bc8c")) +
       scale_color_manual(values = c("Red" = "#e84351", "Yellow" = "#f39c12", "Green" = "#00bc8c")) +
       labs(
