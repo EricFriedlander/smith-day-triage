@@ -30,23 +30,24 @@ multiplier <- 1
 SYMPTOMS_REFERENCE <- tibble::tribble(
   ~symptom, ~mean_wait, ~sd_wait, ~default_color,
   # Critical Symptoms (low wait times)
-  "Unconscious", 15, 3, "Red",
-  "Severe Bleeding", 20, 5, "Red",
-  "Chest Pain", 25, 5, "Red",
-  "Difficulty Breathing", 30, 8, "Red",
+  "Unresponsive To Pain", 15, 3,"Green",
+  "Systolic BP Below 50", 20, 5,"Green",
+  "Abnormal Heart Rhythm", 25, 5,"Green",
+  "Audible Wheezing", 30, 8,"Green",
   # Moderate Symptoms
-  "Abdominal Pain", 90, 20, "Yellow",
-  "Concussion", 120, 30, "Yellow",
-  "Deep Laceration", 150, 40, "Yellow",
+  "Pain In Abdominal Area", 90, 20, "Green",
+  "Unable To Name President", 120, 30, "Green",
+  "Headache", 150, 40, "Green",
   # Minor Symptoms (high wait times)
-  "Simple Fracture", 240, 60, "Green",
-  "Sprain", 300, 60, "Green",
-  "Minor Abrasions", 360, 60, "Green"
+  "Dizzyness", 240, 60, "Green",
+  "Extreme Joint Swelling", 300, 60, "Green",
+  "Vomiting", 360, 60, "Green"
 ) |>
   mutate(
     mean_wait = mean_wait * multiplier,
     sd_wait = sd_wait * multiplier
-  )
+  ) |>
+  arrange(symptom) # Sort alphabetically for the UI
 
 # Simulation constants
 N_PATIENTS <- 50
@@ -178,13 +179,13 @@ ui <- page_navbar(
       # Plot 1: Which symptoms led to life-flights?
       card(
         card_header("Analysis: The Deadly Symptoms"),
-        p("This chart shows the percentage of patients with a given symptom who required a Life-Flight. High bars indicate symptoms you may have under-prioritized."),
+        p("This chart shows the percentage of patients with a given symptom who required a Life-Flight."),
         plotOutput("deadly_symptoms_plot", height = "500px")
       ),
       # Plot 2: Did the triage color match the urgency?
       card(
         card_header("Analysis: Wait Time vs. Reality"),
-        p("This chart compares the patient's true urgency (Max Wait Time) against the Triage Color you assigned. Critical patients (low Max Wait Time) in the Green category are a major risk."),
+        p("This chart compares the time a patient waited until they required a life-flight against the Triage Color you assigned."),
         plotOutput("wait_time_plot", height = "500px")
       )
     ),
