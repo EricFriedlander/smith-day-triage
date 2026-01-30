@@ -1,0 +1,18 @@
+product_type = 'connect_cloud'
+'$schema' = 'https://cdn.posit.co/publisher/schemas/posit-publishing-schema-v3.json'
+type = 'html'
+entrypoint = 'triage_activity_slides.html'
+source = 'triage_activity_slides.qmd'
+validate = true
+files = [
+  '/triage_activity_slides.html',
+  '/triage_activity_slides_files',
+  '/styles.css',
+  '/style/slide_images/eli.jpeg',
+  '/style/Howler-Logo-01.png',
+  '/.posit/publish/Welcome to the College of Idah-5JJL.toml',
+  '/.posit/publish/deployments/deployment-Q9IM.toml',
+  '/phd_images',
+  '/style'
+]
+title = 'Welcome to the College of Idaho!'
