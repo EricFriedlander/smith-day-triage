@@ -190,7 +190,7 @@ ui <- page_navbar(
         radioButtons(
           "transport_filter",
           "Filter by Transport:",
-          choices = c("Both", "Life-Flight", "Standard"),
+          choices = c("Both", "Life-Flight", "Ambulance"),
           selected = "Both",
           inline = TRUE
         ),
@@ -277,7 +277,7 @@ server <- function(input, output, session) {
       ambulance_q$time_waited <- time_waited_vec
       ambulance_q |>
         mutate(
-          result = if_else(time_waited > max_wait_time, "Life-Flight", "Standard"),
+          result = if_else(time_waited > max_wait_time, "Life-Flight", "Ambulance"),
           simulation_run = .x
         ) |>
         select(
@@ -424,6 +424,7 @@ server <- function(input, output, session) {
     req(simulation_results()$data)
     # Pre-process the symptoms list-column to be a comma-separated string for display
     display_data <- simulation_results()$data |>
+      select(-max_wait_time) |> 
       mutate(symptoms = purrr::map_chr(symptoms, ~ paste(.x, collapse = ", ")))
 
     DT::datatable(
