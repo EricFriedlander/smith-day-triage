@@ -349,16 +349,22 @@ server <- function(input, output, session) {
       )
     } else {
       lifeflights_per_run <- results |>
-        filter(result == "Life-Flight") |>
-        count(simulation_run)
-
-      avg_flights <- mean(lifeflights_per_run$n)
-
+        group_by(simulation_run) |>
+        summarise(n_flights = sum(result == "Life-Flight"), .groups = "drop")
+      
+      avg_flights <- mean(lifeflights_per_run$n_flights)
+      median_flights <- median(lifeflights_per_run$n_flights)
+      min_flights <- min(lifeflights_per_run$n_flights)
+      max_flights <- max(lifeflights_per_run$n_flights)
+      
       layout_columns(
         col_widths = c(4, 8),
         card(
-          card_header("Average Result (100 Runs)"),
-          h3(glue::glue("Average Life-Flights: {round(avg_flights, 2)}"))
+          card_header("Statistical Results (100 Runs)"),
+          h5(glue::glue("Average Life-Flights: {round(avg_flights, 2)}")),
+          h5(glue::glue("Min Life-Flights: {min_flights}")),
+          h5(glue::glue("Median Life-Flights: {median_flights}")),
+          h5(glue::glue("Max Life-Flights: {max_flights}"))
         ),
         card(
           card_header("Distribution of Life-Flights"),
