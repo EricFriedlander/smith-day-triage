@@ -1,104 +1,147 @@
 ---
-title: "Mass Casualty Triage Simulation"
-subtitle: "High School Data Science Activity"
-author: "Eric Friedlander"
+title: "Welcome to the College of Idaho!"
+subtitle: "Data Science Activity"
 format:
   revealjs:
     theme: default
-    logo: Howler-Logo-01.png 
+    logo: style/Howler-Logo-01.png 
     css: styles.css
     transition: fade
     slide-number: true
-    center: true
+    center: false
     title-slide-attributes:
       data-background-image: "style/slide_images/image2.jpeg"
-      data-background-opacity: "0.4"
+      data-background-opacity: "0.6"
       data-background-color: "#000000"
 ---
 
-## The Scenario
+## Who Am I?
 
-A major incident has occurred. 
-
-Dozens of patients are injured.
-
-Resources are limited.
-
-## Your Role
-
-You are the **Triage Officer**.
-
-- **Goal:** Save as many lives as possible.
-- **Challenge:** You have **50 patients** but only **10 ambulances**.
-- **Decision:** Who goes first? Who waits?
-
----
-
-## The Mathematics of Survival
-
-This activity explores:
-
-1.  **Prioritization:** Making hard choices with limited info.
-2.  **Resource Allocation:** Managing a bottleneck (ambulances).
-3.  **Statistical Thinking:** Understanding variability and risk.
-
-## The Simulation App
-
-We will use a shiny application to run the simulation.
-
-::: {.panel-tabset}
-
-### Classify
-Assign a priority color to symptoms based on urgency.
-- <span style="color: #e84351; font-weight: bold;">Red:</span> Immediate
-- <span style="color: #f39c12; font-weight: bold;">Yellow:</span> Urgent
-- <span style="color: #00bc8c; font-weight: bold;">Green:</span> Delayed
-
-### Simulate
-Watch as patients are transported.
-- **Ambulance Round Trip:** 15 Minutes.
-- **Wait Time:** If a patient waits longer than their body can handle, they require a **Life-Flight** (Critical Failure).
-
-### Analyze
-View the "After Action Report".
-- Which symptoms caused the most Life-Flights?
-- Did your classification match reality?
+::: incremental
+- Eric Friedlander, Assistant Professor of Computer Science
+- What is a Professor?
+- Professors have two jobs... Teaching and Research
+- My education:
+  - B.S. in Mathematics and Statistics at Rice University
+  - Ph.D. in Statistics and Operations Research at UNC-Chapel Hill
+- What is a Ph.D.?
 :::
 
-## Key Metrics
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
 
-<div style="border: 2px solid #543A61; padding: 20px; border-radius: 10px;">
-<h3 style="color: #543A61;">Max Wait Time</h3>
-The simplified "time until death" or critical failure for a patient.
-</div>
 
-<div style="border: 2px solid #543A61; padding: 20px; border-radius: 10px;">
-<h3 style="color: #543A61;">Life-Flight</h3>
-The outcome when:
-<br>
-<em>Actual Wait Time > Max Wait Time</em>
-</div>
+## {background-image="phd_images/slide-01.png?v=2" background-size="101%" background-position="center"}
 
-</div>
+## Imagine a circle that contains all of human knowledge:
 
-## Activity Steps
+![](phd_images/slide-02.png?v=2){.phd-image}
 
-1.  **Open the App**: Launch `app.R`.
-2.  **Triage Station**: Review the 10 symptoms (e.g., *Chest Pain*, *Sprain*, *Unconscious*).
-3.  **Assign Colors**: Decide who is Red, Yellow, or Green.
-4.  **Run Simulation**: Start with 1 run, then try 100.
-5.  **Iterate**: Use the **After Action Report** to refine your strategy. Can you save everyone?
+## By the time you finish elementary school, you know a little:
 
-## Discussion Questions
 
-- Which symptoms were "deceptively" dangerous?
-- How did variability (randomness) affect your results?
-- Is it better to be safe (classify everyone as Red) or efficient?
 
-## Ready? {background-color="#543A61"}
+![](phd_images/slide-03.png?v=2){.phd-image}
 
-<div style="color: #FFCB70; font-size: 2em; font-weight: bold;">
-Let's Save Lives.
-</div>
+## By the time you finish high school, you know a bit more:
+
+![](phd_images/slide-04.png?v=2){.phd-image}
+
+## With a bachelor's degree, you gain a specialty:
+
+![](phd_images/slide-05.png?v=2){.phd-image}
+
+## A master's degree deepens that specialty:
+
+![](phd_images/slide-06.png?v=2){.phd-image}
+
+## Reading research papers takes you to the edge of human knowledge:
+
+![](phd_images/slide-07.png?v=2){.phd-image}
+
+## Once you're at the boundary, you focus:
+
+![](phd_images/slide-08.png?v=2){.phd-image}
+
+## You push at the boundary for a few years:
+
+![](phd_images/slide-09.png?v=2){.phd-image}
+
+## Until one day, the boundary gives way:
+
+![](phd_images/slide-10.png?v=2){.phd-image}
+
+## And, that dent you've made is called a Ph.D.:
+
+![](phd_images/slide-11.png?v=2){.phd-image}
+
+## Of course, the world looks different to you now:
+
+![](phd_images/slide-12.png?v=2){.phd-image}
+
+## So, don't forget the bigger picture:
+
+
+
+![](phd_images/slide-13.png?v=2){.phd-image}
+
+##
+
+![](phd_images/slide-14.png?v=2){.phd-image}
+
+##
+
+![](phd_images/slide-15.png?v=2){.phd-image}
+
+## My Ph.D.
+
+::: incremental
+- Dissertation: Diffusion Approximations for Weakly Interacting Particle Systems
+- BORING!
+  ![](style/slide_images/eli.jpeg){.absolute .fragment .fade-in-then-out top=100 left=50 width="800"}
+- OK OK OK OK OK... I studied queueing...
+- What is queueing?
+- How things line up...
+- STILL BORING!!!
+:::
+
+## Lot's of cool things form lines
+
+- Computers
+- Servers
+- Hospitals
+- Ubers
+- Banks
+- Airlines
+
+## Activity Time!!!
+
+::: incremental
+- How can we use Math to improve our response to emergency situations?
+- Our setting for today: THERE'S BEEN A MAJOR GAS LEAK IN THE LIBRARY AT THE COLLEGE OF IDAHO!
+- About 50 patients with a variety of symptoms
+- Only 10 ambulances (although more are on the way)
+- How can we prioritize who should get in the ambulance first?
+:::
+
+## Our Job
+
+- Develop a **triage** policy
+- Based on a patients symptoms classify them as:
+  - "Red": Highest priority for an ambulance
+  - "Yellow": Medium priority for an ambulance
+  - "Green": Lowest priority for an ambulance
+- If a patient has to wait too long for an ambulance, they require a life-flight (very expensive and not good for the patient)
+
+## How can we do this?
+
+::: incremental
+- I've build a model?
+- What's a model?
+- [I've made it into an app](https://efriedlander.shinyapps.io/high-school-triage-activity/)
+:::
+
+# Let's walk through the app together
+
+## Rest of time
+
+- Who can design the **best** triage policy!
