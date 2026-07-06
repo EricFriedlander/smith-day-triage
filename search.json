@@ -1,0 +1,65 @@
+[
+  {
+    "objectID": "index.html#who-am-i",
+    "href": "index.html#who-am-i",
+    "title": "Welcome to the College of Idaho!",
+    "section": "Who Am I?",
+    "text": "Who Am I?\n\nEric Friedlander, Assistant Professor of Computer Science\nPh.D. in Statistics & Operations Research (UNC-Chapel Hill) — I studied queueing theory: the math of how things wait in line\nQueueing shows up everywhere: hospitals, call centers, airports, 911 dispatch\nToday we’ll use it to solve a life-or-death problem"
+  },
+  {
+    "objectID": "index.html#activity-time",
+    "href": "index.html#activity-time",
+    "title": "Welcome to the College of Idaho!",
+    "section": "Activity Time!!!",
+    "text": "Activity Time!!!\n\nOur setting: there’s been a major explosion in the library!\nAbout 50 patients with a variety of symptoms\nOnly 10 ambulances on scene (although more are on the way)\nYou can’t save everyone — how do you decide who goes first?"
+  },
+  {
+    "objectID": "index.html#triage-sorting-patients-by-priority",
+    "href": "index.html#triage-sorting-patients-by-priority",
+    "title": "Welcome to the College of Idaho!",
+    "section": "Triage: Sorting Patients by Priority",
+    "text": "Triage: Sorting Patients by Priority\n\nBased on a patient’s symptoms, you’ll classify them into one of four categories:\n\nRed: Highest priority for an ambulance\nYellow: Medium priority for an ambulance\nGreen: Lowest priority for an ambulance\nBlack (Expectant): No ambulance is sent at all\n\n\n\nIf a patient waits too long for transport — or is marked Black — they die."
+  },
+  {
+    "objectID": "index.html#why-would-we-ever-choose-black",
+    "href": "index.html#why-would-we-ever-choose-black",
+    "title": "Welcome to the College of Idaho!",
+    "section": "Why Would We Ever Choose Black?",
+    "text": "Why Would We Ever Choose Black?\n\nBlack isn’t “giving up” — it’s realism\nSome symptoms are so severe that no realistic response time can save that patient\nSending them an ambulance anyway just means someone savable waits longer instead\nThe hardest, most important skill in mass-casualty triage: knowing when Black is the correct call"
+  },
+  {
+    "objectID": "index.html#your-job",
+    "href": "index.html#your-job",
+    "title": "Welcome to the College of Idaho!",
+    "section": "Your Job",
+    "text": "Your Job\n\nDevelop a triage policy: a rule that maps each symptom to Red, Yellow, Green, or Black\nYou won’t be told which symptoms are truly dangerous — you have to figure it out from the data\nRun the simulation, see who died, and refine your policy"
+  },
+  {
+    "objectID": "index.html#lets-walk-through-the-app",
+    "href": "index.html#lets-walk-through-the-app",
+    "title": "Welcome to the College of Idaho!",
+    "section": "Let’s Walk Through the App",
+    "text": "Let’s Walk Through the App\n\nOpen the triage simulator\nTwo tabs: Triage Station (set up your policy) and After Action Report (see what happened)"
+  },
+  {
+    "objectID": "index.html#how-to-use-the-app",
+    "href": "index.html#how-to-use-the-app",
+    "title": "Welcome to the College of Idaho!",
+    "section": "How to Use the App",
+    "text": "How to Use the App\n\nOn Triage Station, assign a color to every symptom (all start as Green)\nSet “Number of Simulations” to Statistical Run (100) and click Run Simulation\nYou’ll land on After Action Report — check Average Deaths\nCheck The Deadly Symptoms chart: which symptoms killed the most patients?\nCheck Triage vs. Transport Time — use the Symptom dropdown to zoom in on one symptom at a time: what color did it get, and how long did it wait?\nGo back to Triage Station, adjust your colors, and run it again"
+  },
+  {
+    "objectID": "index.html#design-against-100-runs-not-1",
+    "href": "index.html#design-against-100-runs-not-1",
+    "title": "Welcome to the College of Idaho!",
+    "section": "Design Against 100 Runs, Not 1",
+    "text": "Design Against 100 Runs, Not 1\n\nSingle Run shows you one random group of patients — you could just get lucky (or unlucky)\nStatistical Run (100) tests your policy against 100 different random groups\nUse the average, min, and max deaths to judge your policy — a good policy does well most of the time, not just once\nUse Single Run only to eyeball individual patients — design your policy off the 100-run numbers"
+  },
+  {
+    "objectID": "index.html#competition-time",
+    "href": "index.html#competition-time",
+    "title": "Welcome to the College of Idaho!",
+    "section": "Competition Time",
+    "text": "Competition Time\n\nYou have the rest of the time to refine your policy\nAt the very end, I will give you a “seed” and you’ll initiate a single run\nThe team with the fewest deaths wins!\nWho can design the best triage policy?"
+  }
+]
