@@ -1,0 +1,10 @@
+name: smith-day-triage
+title:
+username: efriedlander
+account: efriedlander
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 17586675
+bundleId: 12229239
+url: https://efriedlander.shinyapps.io/smith-day-triage/
+version: 1

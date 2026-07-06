@@ -1,0 +1,7 @@
+project:
+  type: website
+  render:
+    - index.qmd
+
+website:
+  title: "Welcome to the College of Idaho!"

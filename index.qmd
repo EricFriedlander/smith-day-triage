@@ -1,0 +1,93 @@
+---
+title: "Welcome to the College of Idaho!"
+subtitle: "Data Science Activity"
+format:
+  revealjs:
+    theme: default
+    logo: style/Howler-Logo-01.png
+    css: styles.css
+    transition: fade
+    slide-number: true
+    center: false
+    title-slide-attributes:
+      data-background-image: "style/slide_images/image2.jpeg"
+      data-background-opacity: "0.6"
+      data-background-color: "#000000"
+---
+
+## Who Am I?
+
+::: incremental
+- Eric Friedlander, Assistant Professor of Computer Science
+- Ph.D. in Statistics & Operations Research (UNC-Chapel Hill) — I studied **queueing theory**: the math of how things wait in line
+- Queueing shows up everywhere: hospitals, call centers, airports, 911 dispatch
+- Today we'll use it to solve a life-or-death problem
+:::
+
+## Activity Time!!!
+
+::: incremental
+- Our setting: **there's been a major explosion in the library!**
+- About 50 patients with a variety of symptoms
+- Only 10 ambulances on scene (although more are on the way)
+- You can't save everyone — how do you decide who goes first?
+:::
+
+## Triage: Sorting Patients by Priority
+
+- Based on a patient's symptoms, you'll classify them into one of four categories:
+  - **Red**: Highest priority for an ambulance
+  - **Yellow**: Medium priority for an ambulance
+  - **Green**: Lowest priority for an ambulance
+  - **Black (Expectant)**: **No ambulance is sent at all**
+
+::: {.fragment}
+If a patient waits too long for transport — or is marked Black — **they die.**
+:::
+
+## Why Would We Ever Choose Black?
+
+::: incremental
+- Black isn't "giving up" — it's realism
+- Some symptoms are so severe that no realistic response time can save that patient
+- Sending them an ambulance anyway just means **someone savable waits longer instead**
+- The hardest, most important skill in mass-casualty triage: knowing when Black is the correct call
+:::
+
+## Your Job
+
+- Develop a **triage policy**: a rule that maps each symptom to Red, Yellow, Green, or Black
+- You won't be told which symptoms are truly dangerous — you have to figure it out from the data
+- Run the simulation, see who died, and refine your policy
+
+## Let's Walk Through the App
+
+- [Open the triage simulator](https://efriedlander.shinyapps.io/high-school-triage-activity/)
+- Two tabs: **Triage Station** (set up your policy) and **After Action Report** (see what happened)
+
+## How to Use the App
+
+::: incremental
+1. On **Triage Station**, assign a color to every symptom (all start as Green)
+2. Set "Number of Simulations" to **Statistical Run (100)** and click **Run Simulation**
+3. You'll land on **After Action Report** — check **Average Deaths**
+4. Check **The Deadly Symptoms** chart: which symptoms killed the most patients?
+5. Check **Triage vs. Transport Time** — use the **Symptom** dropdown to zoom in on one symptom at a time: what color did it get, and how long did it wait?
+6. Go back to **Triage Station**, adjust your colors, and run it again
+:::
+
+## Design Against 100 Runs, Not 1
+
+::: incremental
+- **Single Run** shows you one random group of patients — you could just get lucky (or unlucky)
+- **Statistical Run (100)** tests your policy against 100 different random groups
+- Use the **average, min, and max deaths** to judge your policy — a good policy does well most of the time, not just once
+- Use Single Run only to eyeball individual patients — design your policy off the 100-run numbers
+:::
+
+## Competition Time
+
+- You have the rest of the time to refine your policy
+- At the very end, I will give you a "seed" and you'll initiate a single run
+- The team with the fewest deaths wins!
+- Who can design the best triage policy?
